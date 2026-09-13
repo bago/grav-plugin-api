@@ -1,3 +1,9 @@
+# v1.0.33
+## 09/13/2026
+
+1. [](#bugfix)
+    * A plugin or theme whose name or description in its `blueprints.yaml` is a translation key now shows the translated text in Admin2, instead of the key itself. Anything that is not a translation key, or has no translation on the site, is still shown exactly as its author wrote it. Thanks to @phmg701 [#39](https://github.com/getgrav/grav-plugin-api/issues/39)
+
 # v1.0.32
 ## 09/11/2026
 
