@@ -1,3 +1,10 @@
+# v1.0.33
+## 09/13/2026
+
+1. [](#bugfix)
+    * Disabling an account now immediately stops its API keys from working. They previously kept authenticating until the key itself expired or was revoked by hand, even though the password and token sign-in paths both refused the account. Thanks to @sandymac [#37](https://github.com/getgrav/grav-plugin-api/issues/37)
+    * A plugin or theme whose name or description in its `blueprints.yaml` is a translation key now shows the translated text in Admin2, instead of the key itself. Anything that is not a translation key, or has no translation on the site, is still shown exactly as its author wrote it. Thanks to @phmg701 [#39](https://github.com/getgrav/grav-plugin-api/issues/39)
+
 # v1.0.32
 ## 09/11/2026
 
