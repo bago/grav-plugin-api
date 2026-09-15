@@ -1,3 +1,16 @@
+# v1.0.35
+## 09/15/2026
+
+1. [](#new)
+    * Pages now report their publish and unpublish dates along with an effective publishing state, so an admin listing can tell a page scheduled to go live later apart from a draft, and an expired page apart from either. Dates are read using the page's own date format, so a day-first date is no longer read as month-first. [getgrav/grav-plugin-admin2#2523](https://github.com/getgrav/grav-plugin-admin2/issues/2523)
+
+    * The admin's page media upload settings are now part of the preferences the admin interface reads at start-up, so the new admin can apply the same image resizing and resolution limits the old one always has [getgrav/grav-plugin-api#41](https://github.com/getgrav/grav-plugin-api/issues/41)
+
+1. [](#bugfix)
+    * Plugins that watch media are now told before a file is added to or removed from the site Media library, the same way they already were for page media. A plugin that checks or blocks uploads was quietly skipped for anything done on the Media screen. Thanks to @onetrev [#41](https://github.com/getgrav/grav-plugin-api/issues/41)
+    * The Media count in the sidebar now counts only the site media library. On a site with no `user/media` folder it fell back to counting `user/images` — a plain assets folder plugins and themes write to — so the badge showed a number that had nothing to do with the empty Media screen beside it.
+    * **The Plugins and Themes screens no longer offer to sell you a premium add-on you have already bought.** Where a store sells one licence that covers several packages, the repository entry names the product the key belongs to in `premium.license_product`. The API only reported a package as licensed when a key was filed under that package's own name, so Add Plugin drew a Buy cart beside add-ons the customer's key already covers, and installing one was refused with "requires a license" before the download proxy — which would have approved it — was ever asked. Both now read the key filed under the product the package belongs to. Requires Grav 2.1.5.
+
 # v1.0.34
 ## 09/14/2026
 
