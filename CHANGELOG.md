@@ -1,8 +1,10 @@
 # v1.0.35
-## 09/14/2026
+## 09/15/2026
 
 1. [](#new)
     * Pages now report their publish and unpublish dates along with an effective publishing state, so an admin listing can tell a page scheduled to go live later apart from a draft, and an expired page apart from either. Dates are read using the page's own date format, so a day-first date is no longer read as month-first. [getgrav/grav-plugin-admin2#2523](https://github.com/getgrav/grav-plugin-admin2/issues/2523)
+
+    * The admin's page media upload settings are now part of the preferences the admin interface reads at start-up, so the new admin can apply the same image resizing and resolution limits the old one always has [getgrav/grav-plugin-api#41](https://github.com/getgrav/grav-plugin-api/issues/41)
 
 1. [](#bugfix)
     * Plugins that watch media are now told before a file is added to or removed from the site Media library, the same way they already were for page media. A plugin that checks or blocks uploads was quietly skipped for anything done on the Media screen. Thanks to @onetrev [#41](https://github.com/getgrav/grav-plugin-api/issues/41)
