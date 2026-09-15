@@ -288,8 +288,11 @@ class DashboardController extends AbstractApiController
         // dashboard endpoint, so the tally is cached for a few minutes — a
         // slightly stale count is invisible on a dashboard card, while walking
         // a 10k-file library per visit is not.
-        $mediaDir = $this->grav['locator']->findResource('user://media', true)
-            ?: $this->grav['locator']->findResource('user://images', true);
+        // Only `user://media` counts: that is the one directory the Media
+        // browser lists, so anything else here reports a number the user cannot
+        // reconcile with what they see (`user://images` is a plain assets
+        // folder that plugins and themes write to).
+        $mediaDir = $this->grav['locator']->findResource('user://media', true);
         $totalMedia = 0;
         if ($mediaDir && is_dir($mediaDir)) {
             $cache = $this->grav['cache'];
