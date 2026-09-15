@@ -64,7 +64,7 @@ class PreferencesResolver
             'editorFixedHeight' => 0,
             'adminLanguage' => 'en',
             'pagesPerPage' => 20,
-            'pagesViewMode' => 'tree',
+            'pagesViewMode' => 'miller',
             'usersViewMode' => 'cards',
             'groupsViewMode' => 'cards',
             'pluginsViewMode' => 'cards',
