@@ -1,3 +1,9 @@
+# v1.0.36
+## 09/17/2026
+
+1. [](#bugfix)
+    * The dashboard exposure probe now tests `.dat`, `.txt` and `.zip` files in data, backup and temporary storage, so front proxies serving only some file types are detected. Storage outside the web root is excluded, and the response remains compatible with older Admin2 bundles. [getgrav/grav#4316](https://github.com/getgrav/grav/issues/4316)
+
 # v1.0.35
 ## 09/15/2026
 
