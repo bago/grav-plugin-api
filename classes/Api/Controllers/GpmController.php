@@ -1294,7 +1294,14 @@ class GpmController extends AbstractApiController
         }
 
         $base = $type === 'themes' ? 'themes' : 'plugins';
-        $path = $this->grav['locator']->findResource("user://{$base}/{$slug}", true);
+        $locator = $this->grav['locator'];
+        $path = $locator->findResource("{$base}://{$slug}", true);
+
+        // Honor configured package stream precedence (including multisite
+        // overlays). Retain the legacy user path when no package resolves.
+        if (!$path || !is_dir($path)) {
+            $path = $locator->findResource("user://{$base}/{$slug}", true);
+        }
 
         if (!$path || !is_dir($path)) {
             throw new NotFoundException("Package '{$slug}' not found.");
