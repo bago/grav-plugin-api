@@ -1,3 +1,10 @@
+# v1.0.37
+## 09/18/2026
+
+1. [](#bugfix)
+    * The dashboard exposure probe now also tests `.json` files, the format most data in `user/data` is stored in.
+    * The dashboard's "last backup" time no longer counts the exposure probe's test file as a backup. It only counts archives Grav's backup tool created.
+
 # v1.0.36
 ## 09/18/2026
 

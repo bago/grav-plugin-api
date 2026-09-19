@@ -330,7 +330,9 @@ class DashboardController extends AbstractApiController
         $backupsDir = $this->grav['locator']->findResource('backup://', true);
         $lastBackup = null;
         if ($backupsDir && is_dir($backupsDir)) {
-            $backups = glob($backupsDir . '/*.zip');
+            // Only Grav's own `<name>--<timestamp>.zip` archives, not the exposure
+            // probe's sentinel or anything else that happens to be a zip.
+            $backups = preg_grep('/--\d+\.zip$/', glob($backupsDir . '/*.zip') ?: []);
             if (!empty($backups)) {
                 $latest = max(array_map('filemtime', $backups));
                 $lastBackup = date('c', $latest);

@@ -40,7 +40,7 @@ final class ExposureProbe
         }
 
         $probes = [];
-        foreach (['dat', 'txt', 'zip'] as $extension) {
+        foreach (['dat', 'txt', 'zip', 'json'] as $extension) {
             $filename = 'grav-security-probe.' . $extension;
             $file = rtrim($directory, '/\\') . '/' . $filename;
             $token = '';
