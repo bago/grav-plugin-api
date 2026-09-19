@@ -1,5 +1,5 @@
 # v1.0.36
-## 09/17/2026
+## 09/18/2026
 
 1. [](#bugfix)
     * **[security] A blanket `admin` or `api` grant no longer counts as super user.** Permissions inherit from their parent key, so an account given all of `api` picked up `api.super` along with it — and super is the flag that decides who can hand super to somebody else. Super must now be granted deliberately, and an invitation can no longer carry it. Ordinary permission inheritance is unchanged. Thanks to @redwolf1919
