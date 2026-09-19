@@ -26,7 +26,7 @@ class ExposureProbeTest extends TestCase
     public function testAllExtensionsAreAvailableAndConcurrentDashboardsReuseTokens(): void
     {
         $probes = ExposureProbe::create($this->root, 'custom user/data', 'https://example.com/subsite');
-        self::assertSame(['dat', 'txt', 'zip'], array_column($probes, 'extension'));
+        self::assertSame(['dat', 'txt', 'zip', 'json'], array_column($probes, 'extension'));
         foreach ($probes as $probe) {
             self::assertTrue($probe['available']);
             self::assertSame($probe['token'], file_get_contents($this->root . '/grav-security-probe.' . $probe['extension']));
@@ -60,6 +60,6 @@ class ExposureProbeTest extends TestCase
     {
         file_put_contents($this->root . '/blocked', 'file');
         $probes = ExposureProbe::create($this->root . '/blocked/data', 'user/data', 'https://example.com');
-        self::assertSame([false, false, false], array_column($probes, 'available'));
+        self::assertSame([false, false, false, false], array_column($probes, 'available'));
     }
 }
