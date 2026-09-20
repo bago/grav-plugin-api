@@ -159,6 +159,8 @@ curl -X POST https://yoursite.com/api/v1/auth/revoke \
 
 If a user has an active Grav admin session, the API recognizes it automatically. This enables the current admin UI (or a future SPA admin) to call the API from the browser without separate authentication — no API key or JWT needed.
 
+**Writes on a session must come from your own site.** A `POST`, `PUT`, `PATCH` or `DELETE` signed in by the session cookie alone is refused with a `403` unless its `Origin` (or `Referer`) names this host or an origin listed in `cors.origins`. A request with neither header has to carry a JSON content type or a custom header such as `X-Requested-With`, which a form on another site cannot send. Same-origin `fetch` calls pass as they are. API keys and JWTs are never asked, and on a public route a forged write is simply treated as a guest.
+
 ### Which method should I use?
 
 | Use Case | Method | Why |
@@ -1491,6 +1493,7 @@ grav-plugin-api/
 │   │   ├── AuthenticatorInterface.php
 │   │   ├── ApiKeyAuthenticator.php
 │   │   ├── JwtAuthenticator.php
+│   │   ├── SameOriginGuard.php
 │   │   ├── SessionAuthenticator.php
 │   │   └── ApiKeyManager.php
 │   ├── Controllers/
