@@ -35,6 +35,8 @@ class PreferencesResolver
     private const VALID_EDITOR_MODE = ['normal', 'expert'];
     private const VALID_EDITOR_KEYMAP = ['default', 'vim'];
     private const VALID_LOGO_MODE = ['default', 'text', 'custom'];
+    private const LOGO_HEIGHT_MIN = 16;
+    private const LOGO_HEIGHT_MAX = 44;
     private const VALID_PAGES_VIEW_MODE = ['tree', 'list', 'miller'];
     private const VALID_ACCOUNTS_VIEW_MODE = ['cards', 'table'];
     /** '' = follow whatever the Flex directory blueprint declares. */
@@ -135,6 +137,9 @@ class PreferencesResolver
             'text' => 'Grav',
             'logoLight' => '',
             'logoDark' => '',
+            // Height of a custom logo in the sidebar, in CSS pixels. 0 = the
+            // built-in 28px. Capped so it still fits the 48px sidebar header.
+            'logoHeight' => 0,
             // Custom labelling shown pre-auth on the sign-in screen and in the
             // browser tab. Empty = fall back to the built-in "Grav Admin" copy.
             'title' => '',
@@ -509,11 +514,17 @@ class PreferencesResolver
             $showPoweredBy = is_scalar($showPoweredBy) ? (bool) $showPoweredBy : $defaults['showPoweredBy'];
         }
 
+        $logoHeight = $input['logoHeight'] ?? $defaults['logoHeight'];
+        $logoHeight = is_numeric($logoHeight) && (int) $logoHeight > 0
+            ? max(self::LOGO_HEIGHT_MIN, min(self::LOGO_HEIGHT_MAX, (int) $logoHeight))
+            : 0;
+
         return [
             'mode' => $mode,
             'text' => substr($text, 0, 64),
             'logoLight' => $this->sanitizeLogoPath($input['logoLight'] ?? ''),
             'logoDark' => $this->sanitizeLogoPath($input['logoDark'] ?? ''),
+            'logoHeight' => $logoHeight,
             'title' => substr($title, 0, 64),
             'subtitle' => substr($subtitle, 0, 128),
             'showPoweredBy' => $showPoweredBy,
