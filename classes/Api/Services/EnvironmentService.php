@@ -241,8 +241,9 @@ class EnvironmentService
      * Refuses to delete the env Grav resolved for the current request so the
      * running session can't have its config yanked out from under it.
      *
-     * Throws \InvalidArgumentException on validation failures and \RuntimeException
-     * on filesystem failures.
+     * Throws \InvalidArgumentException on validation failures, \OutOfBoundsException
+     * when no user/env/<name>/ folder exists, and \RuntimeException on filesystem
+     * failures.
      */
     public function deleteEnvironment(string $name): void
     {
@@ -255,35 +256,49 @@ class EnvironmentService
             );
         }
 
+        $userRoot = $this->userRoot();
+        if ($userRoot === null) {
+            throw new \RuntimeException('user:// path not resolvable.');
+        }
+
         $configDir = $this->envConfigRoot($name);
+        $legacyDir = $userRoot . '/' . $name;
         if ($configDir === null) {
-            throw new \InvalidArgumentException("Environment '{$name}' does not exist.");
+            // OutOfBounds (not InvalidArgument) so the controller can answer 404
+            // for a well-formed name that simply isn't there.
+            throw new \OutOfBoundsException("Environment '{$name}' does not exist.");
         }
 
         $environmentDir = dirname($configDir);
-        $userRoot = $this->userRoot();
-        $legacyDir = $userRoot !== null ? $userRoot . '/' . $name : null;
-        if ($legacyDir !== null && $this->samePath($environmentDir, $legacyDir)) {
+        if ($this->samePath($environmentDir, $legacyDir)) {
             throw new \InvalidArgumentException(
                 "Environment '{$name}' uses the legacy user/{$name}/ layout. "
                 . "Remove it manually so unrelated files are not deleted."
             );
         }
 
-        $allowedRoot = $this->configuredEnvironmentsRoot()
-            ?? ($userRoot !== null ? $userRoot . '/env' : null);
-        if ($allowedRoot === null) {
-            throw new \RuntimeException('Environment root is not resolvable.');
-        }
-
         // Guard against symlink escape: the resolved path must still live under
-        // the configured common environment root. If something has replaced an
-        // environment directory with a symlink pointing elsewhere, refuse
-        // rather than recursively delete outside the configured tree.
+        // either Grav's configured common environment root or the historical
+        // user/env root. If something has replaced an environment directory with
+        // a symlink pointing elsewhere, refuse rather than recursively delete
+        // outside an authorized tree.
         $real = realpath($environmentDir);
-        $envRootReal = realpath($allowedRoot);
-        if ($real === false || $envRootReal === false || !str_starts_with($real, $envRootReal . DIRECTORY_SEPARATOR)) {
-            throw new \RuntimeException("Refusing to delete '{$environmentDir}': path resolves outside the configured environment root.");
+        $allowedRoots = array_filter([
+            $this->configuredEnvironmentsRoot(),
+            $userRoot . '/env',
+        ]);
+        $withinAllowedRoot = false;
+        if ($real !== false) {
+            foreach ($allowedRoots as $allowedRoot) {
+                $rootReal = realpath($allowedRoot);
+                if ($rootReal !== false && str_starts_with($real, $rootReal . DIRECTORY_SEPARATOR)) {
+                    $withinAllowedRoot = true;
+                    break;
+                }
+            }
+        }
+        if (!$withinAllowedRoot) {
+            throw new \RuntimeException("Refusing to delete '{$environmentDir}': path resolves outside an authorized environment root.");
         }
 
         self::rmrf($real);
